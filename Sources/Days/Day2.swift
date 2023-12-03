@@ -1,10 +1,3 @@
-//
-//  File.swift
-//
-//
-//  Created by Mustafa Khalil on 2023-12-02.
-//
-
 import Foundation
 import Lib
 
