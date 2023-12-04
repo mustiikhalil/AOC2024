@@ -10,9 +10,9 @@ public struct Day4: Day {
 
   public func start(part: Part) {
     let separators: Set<Character> = Set([":", "|"])
-    var cards: [Card] = []
+    var cards: [OrderedCards] = []
     for line in file.lines {
-      let card = Card(line: line, separators: separators)
+      let card = OrderedCards(line: line, separators: separators)
       cards.append(card)
     }
 
@@ -21,31 +21,30 @@ public struct Day4: Day {
       let value = cards
         .map { $0.contained.multipleOfTwo }
         .reduce(0, +)
-      print("## value: \(value)")
+      print(value)
     case .two:
-      process(cards: cards)
+      process(cards: &cards)
     }
   }
 
-  func process(cards: [Card]) {
-    let mutableCards = cards.map { OrderedCards(card: $0) }
+  func process(cards: inout [OrderedCards]) {
     var index = 0
-    while index < mutableCards.count {
-      let card = mutableCards[index]
+    while index < cards.count {
+      let card = cards[index]
       index += 1
 
       if !card.isEmpty {
         for i in card.id + 1 ... card.id + card.count {
-          if i >= mutableCards.count {
+          if i >= cards.count {
             // loop around since we know for sure there will only be 1 instance of ticket 1
-            mutableCards[0].instance += mutableCards[card.id].instance
+            cards[0].instance += cards[card.id].instance
           } else {
-            mutableCards[i].instance += mutableCards[card.id].instance
+            cards[i].instance += cards[card.id].instance
           }
         }
       }
     }
-    let total = mutableCards
+    let total = cards
       .reduce(0) { r, v in
         r + v.instance
       }
@@ -53,36 +52,19 @@ public struct Day4: Day {
   }
 }
 
+struct OrderedCards {
 
-final class OrderedCards {
-
-  private let card: Card
+  let id: Int
   var instance = 1
-
-  var id: Int {
-    card.id
-  }
+  let contained: [Int]
 
   var isEmpty: Bool {
-    card.contained.isEmpty
+    contained.isEmpty
   }
 
   var count: Int {
-    card.contained.count
+    contained.count
   }
-
-  init(card: Card) {
-    self.card = card
-  }
-
-}
-
-struct Card {
-
-  let id: Int
-  let values: [Int]
-  let winnings: [Int]
-  let contained: [Int]
 
   init(line: String, separators: Set<Character>) {
     var readIndex: IndexReader = .leading(index: 0)
@@ -111,8 +93,6 @@ struct Card {
     }
 
     self.id = id ?? -1
-    self.values = values
-    self.winnings = winnings
     contained = values.filter { winnings.contains($0) }
   }
 
@@ -124,7 +104,7 @@ extension Array {
     if self.count == 1 { return 1 }
     if self.count == 2 { return 2 }
     var value = 2
-    for i in 2..<count {
+    for _ in 2..<count {
       value = value * 2
     }
     return value
