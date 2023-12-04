@@ -102,7 +102,7 @@ struct Game {
 
       let slice = slicedString[slicedString.startIndex..<firstIndex]
       if slice.last == ":" {
-        id = Game.parseNumbers(string: slice)
+        id = slice.parseNumbersFromEndOfString()
       } else {
         colors.append(Game.parseColor(string: slice)!)
         if slice.last == ";" || slice.last?.isLetter == true {
@@ -174,16 +174,4 @@ struct Game {
     }
   }
 
-  static func parseNumbers(string: Substring) -> Int? {
-    var str = ""
-    for v in string.reversed() {
-      if v.isNumber {
-        str.insert(v, at: str.startIndex)
-      }
-      if v == " " {
-        break
-      }
-    }
-    return Int(str)
-  }
 }

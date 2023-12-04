@@ -3,7 +3,7 @@ import Days
 
 extension Runner {
   enum Day: Int, Decodable, ExpressibleByArgument {
-    case day1 = 1, day2, day3
+    case day1 = 1, day2, day3, day4
   }
 
 }
@@ -18,6 +18,8 @@ extension Runner.Day {
       Day2(file: file)
     case .day3:
       Day3(file: file)
+    case .day4:
+      Day4(file: file)
     }
   }
 }

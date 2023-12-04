@@ -25,6 +25,15 @@ public enum IndexReader {
 
 extension String {
 
+  public var lines: [String] {
+    if isEmpty { return [] }
+    let lines = self.components(separatedBy: .newlines)
+    if lines.last?.isEmpty == true {
+      return lines.dropLast()
+    }
+    return lines
+  }
+
   public func slice(start: Int, end: Int) -> Substring {
     let start = index(startIndex, offsetBy: start)
     let end = index(startIndex, offsetBy: end)
